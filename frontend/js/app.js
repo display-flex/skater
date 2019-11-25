@@ -306,8 +306,8 @@ var app = new Vue({
                 });
             } else if (command === 'about') {
                 this.$msgbox({
-                    title: 'About skater',
-                    message: 'skater is a static file server written by <a href="https://cloudron.io" target="_blank">Cloudron</a>.<br/><br/>The source code is licensed under MIT and available <a href="https://git.cloudron.io/cloudron/skater" target="_blank">here</a>.',
+                    title: 'About Skater',
+                    message: 'Skater is a static file server. It is a fork of <a href="https://github.com/nebulade/surfer">Surfer from the Cloudron Team </a>  ',
                     dangerouslyUseHTMLString: true,
                     confirmButtonText: 'OK',
                     showCancelButton: false,
