@@ -5,7 +5,7 @@ It comes with a commandline tool to upload files from your local folders and a w
 
 
 ### Installation
-Skater can also be run standlone on any server:
+Skater is simple to use:
 ```
 git clone 
 cd skater
