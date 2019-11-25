@@ -7,7 +7,7 @@ It comes with a commandline tool to upload files from your local folders and a w
 ### Installation
 Skater is simple to use:
 ```
-git clone 
+git clone https://github.com/NeumannTom/skater
 cd skater
 npm install
 ./server.js <public folder>
