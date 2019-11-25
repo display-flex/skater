@@ -35,7 +35,7 @@
     "express-session": "^1.15.6",
     "ldapjs": "^1.0.2",
     "mkdirp": "^0.5.1",
-    "morgan": "^1.9.0",
+    "morgan": "^1.9.1",
     "multiparty": "^4.1.2",
     "readline-sync": "^1.4.9",
     "request": "^2.83.0",
