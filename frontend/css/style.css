@@ -1,0 +1,100 @@
+
+[v-cloak] {
+    display: none;
+}
+
+html, body {
+    margin: 0;
+    font-family: Helvetica Neue,Helvetica,PingFang SC,Hiragino Sans GB,Microsoft YaHei,SimSun,sans-serif;
+    font-weight: 400;
+    color: rgb(96, 98, 102);
+    height: 100%;
+    width: 100%;
+}
+
+.el-container {
+    height: 100%;
+}
+
+.el-main {
+    padding: 10px;
+}
+
+.el-header {
+    padding: 10px 20px;
+    box-shadow: 0 1px 7px rgba(0,0,0,0.3);
+    height: 52px !important;
+}
+
+.el-footer {
+    padding: 3px 20px;
+    font-size: 14px;
+    height: 38px !important;
+}
+
+a {
+    color: #66b1ff;
+    text-decoration: none;
+}
+
+a:hover, a:focus {
+    color: #409EFF;
+    text-decoration: none;
+}
+
+.el-table a {
+    color: rgb(96, 98, 102);
+}
+
+.el-table a:hover {
+    color: #66b1ff;
+}
+
+.el-table td {
+    padding: 5px 0;
+    cursor: pointer;
+    font-size: 14px;
+}
+
+.el-table th {
+    font-size: 12px;
+}
+
+.el-table__row .list-actions .el-button {
+    visibility: hidden;
+}
+
+.el-table__row:hover .list-actions .el-button {
+    visibility: visible;
+}
+
+.el-progress-bar__inner {
+    transition: width 250ms;
+}
+
+.el-breadcrumb {
+    border: 1px solid #ebeef5;
+    border-radius: 5px;
+    padding: 7px;
+}
+
+.el-switch__label {
+    height: auto;
+}
+
+/* welcome and 404 page */
+.container-center {
+    display: flex;
+    height: 100%;
+    align-items: center;
+    justify-content: center;
+}
+
+.access-token-input {
+    padding: 5px 0;
+    width: 487px;
+}
+
+.access-token-input > input, .access-token-input i {
+    cursor: copy !important;
+}

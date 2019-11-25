@@ -1,0 +1,148 @@
+<html>
+<head>
+    <title> skater </title>
+
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+
+    <link rel="icon" type="image/png" href="/_admin/img/logo.png">
+
+    <link rel="stylesheet" href="/_admin/css/theme-chalk_2.11.1.css">
+    <link rel="stylesheet" href="/_admin/css/style.css">
+
+    <script src="/_admin/js/jquery-1.12.1.min.js"></script>
+    <script src="/_admin/js/vue.min.js"></script>
+    <script src="/_admin/js/element-ui_2.11.1.min.js"></script>
+    <script src="/_admin/js/element-ui_en_2.11.1.min.js"></script>
+    <script src="/_admin/js/filesize.min.js"></script>
+    <script src="/_admin/js/superagent.js"></script>
+
+</head>
+<body>
+
+<div id="app" @drop="drop" @dragover="dragOver">
+
+<el-container>
+  <input type="file" ref="upload" style="display: none" multiple/>
+  <input type="file" ref="uploadFolder" style="display: none" multiple webkitdirectory directory/>
+
+  <el-dialog title="Login" :visible.sync="ready && !session.valid" width="30%" :close-on-press-escape="false" :show-close="false">
+    <el-form :model="loginData" label-position="top" @submit.native.prevent>
+      <el-form-item label="Username"><el-input v-model="loginData.username" id="loginUsernameInput" required autofocus :disabled="loginData.busy"></el-input></el-form-item>
+      <el-form-item label="Password"><el-input v-model="loginData.password" id="loginPasswordInput" type="password" required :disabled="loginData.busy"></el-input></el-form-item>
+      <input type="submit" @click="onLogin" v-show="false"/>
+    </el-form>
+    <span slot="footer" class="dialog-footer">
+      <el-button type="primary" @click="onLogin" id="loginSubmitButton"><i class="el-icon-loading" v-show="loginData.busy"></i><span v-show="!loginData.busy">Login</span></el-button>
+    </span>
+  </el-dialog>
+
+  <el-dialog title="Access Tokens" :visible.sync="accessTokensDialogVisible" width="40%">
+    Access tokens are useful to programmatically deploy assets for example within a CI/CD pipeline.
+    See the <a href="https://cloudron.io/documentation/apps/skater/" target="_blank">docs</a> for more information on how to use this token.
+    <br/>
+    <br/>
+    <el-alert title="Tokens are shared between all users." type="warning" show-icon :closable="false"></el-alert>
+    <br/>
+    <div>
+      <div v-for="accessToken in accessTokens">
+        <el-input suffix-icon="el-icon-copy-document" v-model="accessToken" class="access-token-input" @focus="onCopyAccessToken" size="small"></el-input>
+        <el-button icon="el-icon-delete" type="danger" size="small" @click="onDeleteAccessToken(accessToken)"></el-button>
+      </div>
+    </div>
+    <br/>
+    <el-button @click="onCreateAccessToken()" size="small" type="primary">Create Access Token</el-button>
+  </el-dialog>
+
+  <el-header>
+    <el-row type="flex" justify="space-between">
+      <div style="padding: 7px;">
+        <span>skater</span>
+      </div>
+      <div v-show="session.valid">
+        <el-button type="primary" size="small" icon="el-icon-arrow-left" :disabled="!pathParts.slice(-1).length" @click="onUp"></el-button>
+      </div>
+      <div style="flex-grow: 2; padding: 0 7px;" v-show="session.valid">
+        <el-breadcrumb separator-class="el-icon-arrow-right">
+          <el-breadcrumb-item><a href="#/">Path /</a></el-breadcrumb-item>
+          <el-breadcrumb-item v-for="part in pathParts.slice(0, -1)"><a :href="part.link">{{ part.name }}</a></el-breadcrumb-item>
+          <el-breadcrumb-item v-show="pathParts.slice(-1).length">{{ pathParts.slice(-1).length ? pathParts.slice(-1)[0].name : '' }}</el-breadcrumb-item>
+        </el-breadcrumb>
+      </div>
+      <div align="right" v-show="session.valid">
+        <el-button-group>
+          <el-button type="primary" icon="el-icon-upload2" size="small" @click="onUpload">Upload File</el-button>
+          <el-button type="primary" icon="el-icon-upload" size="small" @click="onUploadFolder">Upload Folder</el-button>
+          <el-button type="primary" icon="el-icon-plus" size="small" @click="onNewFolder">New Folder</el-button>
+        </el-button-group>
+        <el-dropdown @command="onOptionsMenu" :hide-on-click="false" trigger="click">
+          <el-button size="small" icon="el-icon-more" id="burgerMenuButton"></el-button>
+          <el-dropdown-menu slot="dropdown">
+            <el-dropdown-item disabled>Public Folder Listing</el-dropdown-item>
+            <el-dropdown-item command="folderListing">
+              <el-switch v-model="folderListingEnabled" active-text="Enabled" inactive-text="Disabled"></el-switch>
+            </el-dropdown-item>
+            <el-dropdown-item disabled divided>WebDAV Endpoint</el-dropdown-item>
+            <el-dropdown-item><a href="/_webdav/" target="_blank">{{ origin }}/_webdav/</a></el-dropdown-item>
+            <el-dropdown-item command="apiAccess" divided><i class="el-icon-connection"></i> Access Tokens</el-dropdown-item>
+            <el-dropdown-item command="about" divided><i class="el-icon-info"></i> About</el-dropdown-item>
+            <el-dropdown-item command="logout" id="logoutButton"><i class="el-icon-circle-close"></i> Logout</el-dropdown-item>
+          </el-dropdown-menu>
+        </el-dropdown>
+      </div>
+    </el-row>
+  </el-header>
+  <el-main>
+
+    <div v-show="busy">
+      <center><h1><i class="el-icon-loading"></i></h1></center>
+    </div>
+
+    <div v-show="!busy && session.valid" v-cloak>
+      <center>
+        <el-table :data="entries" style="max-width: 1280px;width: 100%" height="100%" empty-text="Folder is emtpy" :default-sort="{ prop: 'filePath', order: 'descending' }" @row-click="open">
+          <el-table-column prop="previewUrl" label="Type" width="100px" sortable>
+            <template slot-scope="scope">
+              <img v-bind:src="scope.row.previewUrl" height="48px" width="48px" style="object-fit: cover;"/>
+            </template>
+          </el-table-column>
+          <el-table-column prop="filePath" label="Name" sortable>
+            <template slot-scope="scope">
+              <el-input v-on:keyup.native.enter="onRenameSubmit(scope.row)" v-on:keyup.native.esc="onRenameEnd(scope.row)" @blur="onRenameEnd(scope.row)" v-model="scope.row.filePathNew" :id="'filePathRenameInputId-' + scope.$index" v-show="scope.row.rename"></el-input>
+              <span v-show="!scope.row.rename">{{ scope.row.filePath }}</span>
+            </template>
+          </el-table-column>
+          <el-table-column prop="size" label="Size" width="150px" sortable :formatter="prettyFileSize"></el-table-column>
+          <el-table-column prop="mtime" label="Modified" width="150px" sortable :formatter="prettyDate"></el-table-column>
+          <el-table-column label="Actions" align="right" width="200px" class-name="list-actions">
+            <template slot-scope="scope">
+              <el-button size="small" icon="el-icon-edit" circle v-show="!scope.row.rename" @click.stop="onRename(scope.row, scope)"></el-button>
+              <el-button size="small" icon="el-icon-download" circle v-show="!scope.row.rename && scope.row.isFile" @click.stop="onDownload(scope.row)"></el-button>
+              <el-button size="small" icon="el-icon-delete" circle v-show="!scope.row.rename" @click.stop="onDelete(scope.row)"></el-button>
+            </template>
+          </el-table-column>
+        </el-table>
+      </center>
+    </div>
+
+  </el-main>
+  <el-footer v-show="uploadStatus.busy">
+    <el-row v-if="uploadStatus.uploadListCount">
+      <center><i class="el-icon-loading"></i> Fetching file information for upload <el-badge class="mark" :value="uploadStatus.uploadListCount"/></center>
+    </el-row>
+    <el-row v-else>
+      <el-col :span="4">
+        Uploading {{ uploadStatus.count }} files ({{ Math.round(uploadStatus.done/1000/1000) }}MB / {{ Math.round(uploadStatus.size/1000/1000) }}MB)
+      </el-col>
+      <el-col :span="20">
+        <el-progress :text-inside="true" :stroke-width="18" :percentage="uploadStatus.percentDone"></el-progress>
+      </el-col>
+    </el-row>
+  </el-footer>
+</el-container>
+
+</div>
+
+<script src="/_admin/js/app.js"></script>
+
+</body>
+</html>

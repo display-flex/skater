@@ -1,0 +1,54 @@
+{
+  "name": "cloudron-skater",
+  "version": "5.9.0",
+  "description": "Simple file server",
+  "main": "server.js",
+  "scripts": {
+    "test": "./node_modules/mocha/bin/_mocha -R spec ./test/test.js"
+  },
+  "keywords": [
+    "file",
+    "server"
+  ],
+  "bin": {
+    "skater": "./cli/skater.js"
+  },
+  "author": "Johannes Zellner <johannes@nebulon.de>",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://git.cloudron.io/cloudron/skater.git"
+  },
+  "dependencies": {
+    "async": "^1.5.2",
+    "bcryptjs": "^2.3.0",
+    "body-parser": "^1.18.2",
+    "colors": "^1.1.2",
+    "commander": "^2.14.1",
+    "compression": "^1.7.2",
+    "connect-lastmile": "0.0.10",
+    "connect-timeout": "^1.6.2",
+    "cookie-parser": "^1.4.1",
+    "debug": "^2.6.9",
+    "del": "^2.2.0",
+    "express": "^4.16.2",
+    "express-session": "^1.15.6",
+    "ldapjs": "^1.0.2",
+    "mkdirp": "^0.5.1",
+    "morgan": "^1.9.0",
+    "multiparty": "^4.1.2",
+    "readline-sync": "^1.4.9",
+    "request": "^2.83.0",
+    "safetydance": "^0.1.1",
+    "serve-index": "^1.9.1",
+    "superagent": "^1.7.2",
+    "underscore": "^1.8.3",
+    "uuid": "^3.2.1",
+    "webdav-server": "^2.4.6"
+  },
+  "devDependencies": {
+    "expect.js": "^0.3.1",
+    "mocha": "^2.4.5",
+    "selenium-webdriver": "^2.52.0"
+  }
+}
