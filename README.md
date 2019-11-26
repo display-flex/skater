@@ -12,7 +12,13 @@ cd skater
 npm install
 ./server.js <public folder>
 ```
-Use the `admin` tool to manage local users.
+
+### Create a user
+With the admin tool you can easily create users
+```
+chmod +x admin
+./admin user-add --username YOURUSERNAME --password YOURPASSWORD
+```
 
 ## File management
 
