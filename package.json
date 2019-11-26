@@ -1,5 +1,5 @@
 {
-  "name": "cloudron-skater",
+  "name": "skater",
   "version": "5.9.0",
   "description": "Simple file server",
   "main": "server.js",
@@ -13,11 +13,11 @@
   "bin": {
     "skater": "./cli/skater.js"
   },
-  "author": "Johannes Zellner <johannes@nebulon.de>",
+  "author": "Tom Neumann <mail@tom.plus>",
   "license": "MIT",
   "repository": {
     "type": "git",
-    "url": "https://git.cloudron.io/cloudron/skater.git"
+    "url": "https://github.com/NeumannTom/skater/"
   },
   "dependencies": {
     "async": "^1.5.2",
