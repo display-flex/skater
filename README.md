@@ -3,6 +3,7 @@
 Skater is a Simple static file server.
 It comes with a commandline tool to upload files from your local folders and a webinterface to manage files directly on the server.
 
+![Alt text](/screenshot.png?raw=true "Webinterface")
 
 ### Installation
 Skater is simple to use:
