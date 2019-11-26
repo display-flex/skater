@@ -23,6 +23,6 @@ The admin interface is available under the `/_admin` location or you can upload 
 
 Skater is a fork from surfer. A file management tool for Cloudron (System to manage cloud apps on a Linux server). The fork was created to use skater without Cloudron on a Linux system.
 
-Surfer: https://github.com/nebulade/surfer 
+Surfer: https://git.cloudron.io/cloudron/surfer
 
 Thanks to @nebulade <3 
